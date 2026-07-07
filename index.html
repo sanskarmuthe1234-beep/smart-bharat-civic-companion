@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Bharat – AI-Powered Civic Companion</title>
+  <meta name="description" content="Access government schemes, report local complaints, check required document formats with AI OCR scanners, and decode policies in simple terms.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body class="dark-theme">
+
+  <!-- Main Grid Container -->
+  <div class="app-layout">
+    
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+      <div class="header-logo">
+        <div class="logo-orb"></div>
+        <div class="logo-text">
+          <h1 id="nav-title">Smart Bharat</h1>
+          <span id="nav-subtitle">AI-Powered Civic Companion</span>
+        </div>
+      </div>
+      
+      <!-- Interactive Controls -->
+      <div class="header-controls">
+        <div class="lang-selector">
+          <i data-lucide="languages"></i>
+          <select id="app-lang-select" aria-label="Select Interface Language">
+            <option value="en">English</option>
+            <option value="hi">हिंदी (Hindi)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+          </select>
+        </div>
+
+        <button id="theme-toggle-btn" class="icon-btn" aria-label="Toggle Color Theme">
+          <i data-lucide="sun" class="sun-icon"></i>
+          <i data-lucide="moon" class="moon-icon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Sidebar -->
+    <aside class="app-sidebar">
+      <nav class="sidebar-nav">
+        <button class="nav-tab active" data-page="home" id="tab-home">
+          <i data-lucide="layout-dashboard"></i>
+          <span class="tab-label" data-i18n="complaints">Civic Portal</span>
+        </button>
+        <button class="nav-tab" data-page="finder" id="tab-finder">
+          <i data-lucide="search"></i>
+          <span class="tab-label" data-i18n="finder">Scheme Finder</span>
+        </button>
+        <button class="nav-tab" data-page="docs" id="tab-docs">
+          <i data-lucide="files"></i>
+          <span class="tab-label" data-i18n="docs">Document Helper</span>
+        </button>
+        <button class="nav-tab" data-page="decoder" id="tab-decoder">
+          <i data-lucide="file-text"></i>
+          <span class="tab-label" data-i18n="decoder">Policy Decoder</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer Info -->
+      <div class="sidebar-footer">
+        <p class="tagline" data-i18n="tagline">Simplifying governance, empowering citizens.</p>
+        <div class="national-emblem-badge">
+          <span>Satyameva Jayate</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main View Container -->
+    <main class="app-main">
+      
+      <!-- PAGE: HOME (Civic Complaint Portal & Dashboard) -->
+      <section id="page-home" class="page-view active">
+        <div class="view-header">
+          <h2 data-i18n="report_title">Civic Portal & Issue Tracker</h2>
+          <p data-i18n="report_desc">Report local public grievances (like potholes or streetlights) and let our AI summarize, categorize, and track your issue.</p>
+        </div>
+
+        <div class="dashboard-grid">
+          
+          <!-- Column 1: Issue Report Form -->
+          <div class="dashboard-card card-form">
+            <h3 data-i18n="report_issue">Report a Civic Issue</h3>
+            <form id="issue-form" class="civic-form">
+              
+              <div class="form-group">
+                <label for="issue-desc" data-i18n="issue_desc">Describe the grievance...</label>
+                <textarea id="issue-desc" rows="4" placeholder="E.g., Pothole on main lane causing traffic problems. Or streetlight not working..." required></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="issue-cat-select" data-i18n="issue_cat">Issue Category</label>
+                  <select id="issue-cat-select">
+                    <option value="General">General / Other</option>
+                    <option value="Potholes">Potholes & Road Damage</option>
+                    <option value="Streetlight">Streetlight Anomaly</option>
+                    <option value="Waste Management">Waste Management / Garbage</option>
+                    <option value="Water Supply">Water Supply / Leakage</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="issue-location" data-i18n="issue_loc">Location/Address</label>
+                  <input type="text" id="issue-location" placeholder="E.g. Sector 4, Crossing Rd, Mumbai" required>
+                </div>
+              </div>
+
+              <!-- Drag and Drop Photo Frame -->
+              <div class="form-group">
+                <label data-i18n="upload_photo">Upload Supporting Photo (Optional)</label>
+                <div class="file-uploader-box">
+                  <input type="file" id="issue-photo" accept="image/*" class="hidden-input">
+                  <label for="issue-photo" class="file-label">
+                    <i data-lucide="image"></i>
+                    <span>Click to upload supporting photo</span>
+                  </label>
+                  <div id="photo-preview" class="photo-preview-box"></div>
+                </div>
+              </div>
+
+              <!-- Interactive Map Mockup -->
+              <div class="form-group">
+                <label>Target Geolocation (AI-Verified)</label>
+                <div class="map-mockup-frame">
+                  <div class="mock-map-marker">📍</div>
+                  <div class="map-grid-pattern"></div>
+                  <span class="map-overlay-coordinates">Lat: 19.0760° N, Lon: 72.8777° E</span>
+                </div>
+              </div>
+
+              <div id="ai-priority-badge" class="ai-priority-badge priority-standard" aria-live="polite">📋 AI Assessment: Standard Priority</div>
+              <button type="submit" class="primary-btn submit-btn" data-i18n="submit_issue">Submit & Analyze Issue</button>
+            </form>
+          </div>
+
+          <!-- Column 2: Issues List & Stats -->
+          <div class="dashboard-card card-list" id="complaints-section-anchor">
+            <h3 data-i18n="active_issues">Active Grievances & Status</h3>
+            
+            <!-- Quick stats bar -->
+            <div class="quick-stats-row">
+              <div class="stat-bubble">
+                <span class="stat-val">24h</span>
+                <span class="stat-lbl">Avg Resolution</span>
+              </div>
+              <div class="stat-bubble">
+                <span class="stat-val">94%</span>
+                <span class="stat-lbl">Clearance Rate</span>
+              </div>
+              <div class="stat-bubble">
+                <span class="stat-val">AI Verified</span>
+                <span class="stat-lbl">Grievance Route</span>
+              </div>
+            </div>
+
+            <!-- List container -->
+            <div id="complaints-list" class="complaints-scroll-container">
+              <!-- Loaded dynamically by issue-reporter.js -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PAGE: SCHEME FINDER -->
+      <section id="page-finder" class="page-view">
+        <div class="view-header">
+          <h2 data-i18n="recommend_title">Personalized Scheme Finder</h2>
+          <p data-i18n="recommend_desc">Fill in your profile details to see which public services and welfare schemes you are eligible for.</p>
+        </div>
+
+        <div class="scheme-finder-container">
+          <!-- Filter wizard form -->
+          <div class="finder-form-card">
+            <form id="recommender-form" class="recommender-grid-form">
+              <div class="form-group">
+                <label for="profile-age" data-i18n="age">Age</label>
+                <input type="number" id="profile-age" min="1" max="110" value="25" required>
+              </div>
+
+              <div class="form-group">
+                <label for="profile-income" data-i18n="income">Annual Household Income (₹)</label>
+                <input type="number" id="profile-income" min="0" value="80000" required>
+              </div>
+
+              <div class="form-group">
+                <label for="profile-occupation" data-i18n="occupation">Occupation</label>
+                <select id="profile-occupation">
+                  <option value="Farmer">Farmer / Agriculturist</option>
+                  <option value="Student">Student</option>
+                  <option value="Street Vendor">Street Vendor / Artisan</option>
+                  <option value="Laborer">Unskilled Laborer</option>
+                  <option value="Salaried">Salaried Employee</option>
+                  <option value="Business">Small Business Owner</option>
+                  <option value="Unemployed">Unemployed</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="profile-state" data-i18n="state">State/Union Territory</label>
+                <select id="profile-state">
+                  <option value="All">All of India</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Uttar Pradesh">Uttar Pradesh</option>
+                  <option value="Karnataka">Karnataka</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="profile-gender" data-i18n="gender">Gender</label>
+                <select id="profile-gender">
+                  <option value="Any">Any / Other</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                </select>
+              </div>
+
+              <button type="submit" class="primary-btn search-btn" data-i18n="find_schemes">Find Schemes</button>
+            </form>
+          </div>
+
+          <!-- Matching schemes rendering list -->
+          <h3 id="recommender-results-title" style="display: none; margin-top: 2rem; font-family: 'Outfit', sans-serif;" data-i18n="results">Your Eligible Schemes</h3>
+          <div id="recommender-results" class="schemes-grid">
+            <!-- Loaded dynamically by scheme-recommender.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: DOCUMENT HELPER & OCR -->
+      <section id="page-docs" class="page-view">
+        <div class="view-header">
+          <h2 data-i18n="doc_title">Document Requirement & Verification Helper</h2>
+          <p data-i18n="doc_desc">Check required documents for various government applications and run a simulated AI OCR check on your uploads.</p>
+        </div>
+
+        <div class="docs-grid-layout">
+          <!-- Left: Scheme Selection and checklist -->
+          <div class="docs-card selection-card">
+            <h3 data-i18n="select_scheme">Select Application Type</h3>
+            <select id="doc-scheme-select" class="large-select">
+              <!-- Populated dynamically -->
+            </select>
+
+            <div id="doc-checklist" class="checklist-panel-items">
+              <p class="muted-placeholder-text">Please choose an application type above to view the required checklist.</p>
+            </div>
+          </div>
+
+          <!-- Right: OCR Uploader and scan simulation log -->
+          <div class="docs-card uploader-card">
+            <h3>AI Document Scanner (Simulated OCR)</h3>
+            <p class="card-instruction">Upload Aadhaar, PAN, or Ration card image or document file to analyze structure.</p>
+            
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label for="ocr-simulated-text" class="subtle-label">Simulate scanned text contents (optional override):</label>
+              <input type="text" id="ocr-simulated-text" placeholder="E.g. 1234 5678 9012 for Aadhaar card check...">
+            </div>
+
+            <div class="ocr-dragzone-frame" id="ocr-dropzone">
+              <i data-lucide="cloud-upload" class="cloud-icon"></i>
+              <span data-i18n="ocr_drag">Drag and drop your document here (or click to upload)</span>
+              <input type="file" id="ocr-file-input" class="hidden-input" accept="image/*,application/pdf">
+            </div>
+
+            <!-- OCR Log Terminal -->
+            <div class="ocr-log-terminal" id="ocr-logs" style="display: none;">
+              <!-- Loaded step by step -->
+            </div>
+
+            <!-- Validation Result Panel -->
+            <div id="ocr-status-result" class="ocr-result-wrapper">
+              <!-- OCR status alerts load here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE: POLICY DECODER -->
+      <section id="page-decoder" class="page-view">
+        <div class="view-header">
+          <h2 data-i18n="decode_title">Smart Policy & Document Decoder</h2>
+          <p data-i18n="decode_desc">Paste long, complicated government guidelines or legal policies to receive a simplified summary, key bullet points, and action items.</p>
+        </div>
+
+        <div class="policy-decoder-layout">
+          <!-- Text Input Block -->
+          <div class="decoder-card-input">
+            <textarea id="policy-input" rows="8" placeholder="Paste official government policy text, rules, or circulars here..."></textarea>
+            <div class="policy-quick-samples-row">
+              <span class="sample-label">Sample Policies:</span>
+              <button class="sample-btn" data-policy="gst">GST Circular (Taxation)</button>
+              <button class="sample-btn" data-policy="nep">School Evaluation Guidelines (Education)</button>
+              <button class="sample-btn" data-policy="data">Digital Data Privacy Bill (Tech)</button>
+            </div>
+            <button id="decode-btn" class="primary-btn decode-btn" data-i18n="simplify_btn">Decode & Simplify Document</button>
+          </div>
+
+          <!-- Result Block -->
+          <div class="decoder-card-result" id="decode-result-panel" style="display: none;">
+            <h3 data-i18n="simplified_result">Decoded Document Insights</h3>
+            
+            <div class="result-segment border-glow">
+              <h4 data-i18n="summary">Simplified Summary</h4>
+              <p id="decode-summary" class="decoded-paragraph-text"></p>
+            </div>
+
+            <div class="result-grid-two-col">
+              <div class="result-segment">
+                <h4 data-i18n="key_takeaways">Key Takeaways</h4>
+                <ul id="decode-takeaways" class="decoded-bullet-list"></ul>
+              </div>
+
+              <div class="result-segment">
+                <h4 data-i18n="actions">Citizen Action Items</h4>
+                <ul id="decode-actions" class="decoded-action-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Side Chat Drawer (AI Companion) -->
+    <aside class="app-chat-drawer" id="chat-drawer-container">
+      <div class="chat-drawer-header">
+        <div class="ai-avatar-badge">
+          <i data-lucide="bot"></i>
+        </div>
+        <div class="chat-title">
+          <h2 data-i18n="companion">AI Companion</h2>
+          <span class="active-status-dot">Online</span>
+        </div>
+        <button id="toggle-chat-size-btn" class="icon-btn" aria-label="Minimize Chat Window">
+          <i data-lucide="chevron-right"></i>
+        </button>
+      </div>
+
+      <!-- Messages Window -->
+      <div class="chat-messages-container" id="chat-messages">
+        <!-- Message bubbles dynamically painted here -->
+      </div>
+
+      <!-- Quick prompts suggestion chip deck -->
+      <div class="chat-suggestions-deck" id="chat-suggestions">
+        <!-- Prompt chips -->
+      </div>
+
+      <!-- Input Area -->
+      <div class="chat-input-bar">
+        <input type="text" id="chat-input" placeholder="Ask about government services, documents, or schemes..." aria-label="Ask AI Companion">
+        <button id="chat-send-btn" class="icon-btn primary-bg" aria-label="Send query">
+          <i data-lucide="send"></i>
+        </button>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Lucide Vector Icons Library -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Dynamic Modules loaded sequentially for Local file:// compatibility -->
+  <script src="./js/mock-data.js"></script>
+  <script src="./js/ai-companion.js"></script>
+  <script src="./js/scheme-recommender.js"></script>
+  <script src="./js/issue-reporter.js"></script>
+  <script src="./js/document-helper.js"></script>
+  <script src="./js/policy-decoder.js"></script>
+  <script src="./main.js"></script>
+</body>
+</html>
